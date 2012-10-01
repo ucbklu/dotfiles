@@ -1,0 +1,49 @@
+#Aliases
+
+#bash
+alias h='history'
+alias ll='ls -al'
+alias ..='cd ..'
+alias rel='source ~/.bashrc'
+alias c='clear'
+alias md='mkdir -p'
+
+#mkdir and cd
+function take {
+  mkdir $1
+  cd $1
+}
+
+#sublime
+alias ea='subl -w ~/bin/dotfiles/bash/aliases & rel'
+alias ee='subl ~/bin/dotfiles/bash/env'
+
+#finder
+alias o='open . &'
+alias ff='open -a Firefox'
+
+#drush
+alias drush='~/drush/drush'
+
+#git
+alias g='git status'
+alias ga='git add -A'
+alias gc='git commit -v'
+alias gca='git commit -v -a'
+alias gd='git diff'
+alias gco='git checkout'
+alias gl='git pull'
+alias gp='git push'
+alias gb='git branch'
+alias glg='git log'
+
+#commit pending changes and quote all args as message
+function gg() {
+  git commit -v -a -m "$*"
+}
+
+#directories
+alias cdg='cd ~/github'
+alias cdb='cd ~/github/berkeley-7.x'
+alias cdp='cd ~/Sites/pantheon_v2'
+alias cdbkp='cd ~/Sites/backups'
