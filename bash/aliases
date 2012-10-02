@@ -27,8 +27,10 @@ alias drush='~/drush/drush'
 
 #git
 alias g='git status'
-alias ga='git add -A'
+alias ga='git add'
+alias gaa='git add -A'
 alias gc='git commit -v'
+alias gcm='git commit -v -m'
 alias gca='git commit -v -a'
 alias gd='git diff'
 alias gco='git checkout'
@@ -42,8 +44,35 @@ function gg() {
   git commit -v -a -m "$*"
 }
 
-#directories
+#cd directories
 alias cdg='cd ~/github'
 alias cdb='cd ~/github/berkeley-7.x'
 alias cdp='cd ~/Sites/pantheon_v2'
 alias cdbkp='cd ~/Sites/backups'
+
+
+#berkeley theme updates
+
+#remove existing theme
+alias rmtheme_ot="git rm -r ~/Sites/pantheon_v2/ot/sites/all/themes/berkeley"
+alias rmtheme_risk="git rm -r ~/Sites/pantheon_v2/riskservices/sites/all/themes/berkeley"
+alias rmtheme_staff="git rm -r ~/Sites/pantheon_v2/staffombuds/sites/all/themes/berkeley"
+alias rmtheme_compliance="git rm -r ~/Sites/pantheon_v2/compliance/sites/all/themes/berkeley"
+
+#symlink to berkeley theme
+alias symtheme_ot="ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/ot/sites/all/themes/berkeley"
+alias symtheme_risk="ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/riskservices/sites/all/themes/berkeley"
+alias symtheme_staff="ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/staffombuds/sites/all/themes/berkeley"
+alias symtheme_compliance="ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/compliance/sites/all/themes/berkeley"
+
+#remove symlink to berkeley theme
+alias nosymtheme_ot="rm ~/Sites/pantheon_v2/ot/sites/all/themes/berkeley"
+alias nosymtheme_risk="rm ~/Sites/pantheon_v2/riskservices/sites/all/themes/berkeley"
+alias nosymtheme_staff="rm ~/Sites/pantheon_v2/staffombuds/sites/all/themes/berkeley"
+alias nosymtheme_compliance="rm ~/Sites/pantheon_v2/compliance/sites/all/themes/berkeley"
+
+#copy latest theme using rsync
+alias rsynctheme_ot="rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/ot/sites/all/themes/berkeley"
+alias rsynctheme_risk="rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/riskservices/sites/all/themes/berkeley"
+alias rsynctheme_staff="rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/staffombuds/sites/all/themes/berkeley"
+alias rsynctheme_compliance="rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/compliance/sites/all/themes/berkeley"
