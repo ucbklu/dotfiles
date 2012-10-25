@@ -40,7 +40,7 @@ alias gb='git branch'
 alias glg='git log'
 
 #commit pending changes and quote all args as message
-function gg() {
+gg() {
   git commit -v -a -m "$*"
 }
 
@@ -53,26 +53,130 @@ alias cdbkp='cd ~/Sites/backups'
 
 #berkeley theme updates
 
+#replace existing theme with symlink: takes $arg1
+reptheme() {
+  if [ -z "$1" ]
+  then
+    echo "Needs one parameter"
+  else
+    git rm -r ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley &&
+    rm -Rf ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley &&
+    ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
+  fi
+}
+
+#remove symlink and copy latest theme using rsync
+applytheme() {
+  if [ -z "$1" ]
+  then
+    echo "Needs one parameter"
+  else
+    rm ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley &&
+    rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
+  fi
+}
+
 #remove existing theme
+rmtheme() {
+  if [ -z "$1" ]
+  then
+    echo "Needs one parameter"
+  else
+    git rm -r ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
+  fi
+}
+
 alias rmtheme_ot="git rm -r ~/Sites/pantheon_v2/ot/sites/all/themes/berkeley"
 alias rmtheme_risk="git rm -r ~/Sites/pantheon_v2/riskservices/sites/all/themes/berkeley"
-alias rmtheme_staff="git rm -r ~/Sites/pantheon_v2/staffombuds/sites/all/themes/berkeley"
+alias rmtheme_staffombuds="git rm -r ~/Sites/pantheon_v2/staffombuds/sites/all/themes/berkeley"
 alias rmtheme_compliance="git rm -r ~/Sites/pantheon_v2/compliance/sites/all/themes/berkeley"
+alias rmtheme_ethics="git rm -r ~/Sites/pantheon_v2/ethics3/sites/all/themes/berkeley"
+alias rmtheme_chanc="git rm -r ~/Sites/pantheon_v2/chancellor/sites/all/themes/berkeley"
+alias rmtheme_acads="git rm -r ~/Sites/pantheon_v2/acads/sites/all/themes/berkeley"
+alias rmtheme_ccac="git rm -r ~/Sites/pantheon_v2/ccac/sites/all/themes/berkeley"
+alias rmtheme_audit="git rm -r ~/Sites/pantheon_v2/audit/sites/all/themes/berkeley"
+alias rmtheme_mypower="git rm -r ~/Sites/pantheon_v2/mypower111/sites/all/themes/berkeley"
+
+#run rm -Rf if needed (if git rm -r doesn't remove cleanly)
+cleanup() {
+  if [ -z "$1" ]
+  then
+    echo "Needs one parameter"
+  else
+    rm -Rf ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
+  fi
+}
+
+alias cleanup_ot="rm -Rf ~/Sites/pantheon_v2/ot/sites/all/themes/berkeley"
+alias cleanup_risk="rm -Rf ~/Sites/pantheon_v2/riskservices/sites/all/themes/berkeley"
+alias cleanup_staffombuds="rm -Rf ~/Sites/pantheon_v2/staffombuds/sites/all/themes/berkeley"
+alias cleanup_compliance="rm -Rf ~/Sites/pantheon_v2/compliance/sites/all/themes/berkeley"
+alias cleanup_ethics="rm -Rf ~/Sites/pantheon_v2/ethics3/sites/all/themes/berkeley"
+alias cleanup_chanc="rm -Rf ~/Sites/pantheon_v2/chancellor/sites/all/themes/berkeley"
+alias cleanup_acads="rm -Rf ~/Sites/pantheon_v2/acads/sites/all/themes/berkeley"
+alias cleanup_ccac="rm -Rf ~/Sites/pantheon_v2/ccac/sites/all/themes/berkeley"
+alias cleanup_audit="rm -Rf ~/Sites/pantheon_v2/audit/sites/all/themes/berkeley"
+alias cleanup_mypower="rm -Rf ~/Sites/pantheon_v2/mypower111/sites/all/themes/berkeley"
 
 #symlink to berkeley theme
+symtheme() {
+  if [ -z "$1" ]
+  then
+    echo "Needs one parameter"
+  else
+    ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
+  fi
+}
+
 alias symtheme_ot="ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/ot/sites/all/themes/berkeley"
 alias symtheme_risk="ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/riskservices/sites/all/themes/berkeley"
-alias symtheme_staff="ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/staffombuds/sites/all/themes/berkeley"
+alias symtheme_staffombuds="ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/staffombuds/sites/all/themes/berkeley"
 alias symtheme_compliance="ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/compliance/sites/all/themes/berkeley"
+alias symtheme_ethics="ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/ethics3/sites/all/themes/berkeley"
+alias symtheme_chanc="ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/chancellor/sites/all/themes/berkeley"
+alias symtheme_acads="ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/acads/sites/all/themes/berkeley"
+alias symtheme_ccac="ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/ccac/sites/all/themes/berkeley"
+alias symtheme_audit="ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/audit/sites/all/themes/berkeley"
+alias symtheme_mypower="ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/mypower111/sites/all/themes/berkeley"
 
 #remove symlink to berkeley theme
+nosymtheme() {
+  if [ -z "$1" ]
+  then
+    echo "Needs one parameter"
+  else
+    rm ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
+  fi
+}
+
 alias nosymtheme_ot="rm ~/Sites/pantheon_v2/ot/sites/all/themes/berkeley"
 alias nosymtheme_risk="rm ~/Sites/pantheon_v2/riskservices/sites/all/themes/berkeley"
-alias nosymtheme_staff="rm ~/Sites/pantheon_v2/staffombuds/sites/all/themes/berkeley"
+alias nosymtheme_staffombuds="rm ~/Sites/pantheon_v2/staffombuds/sites/all/themes/berkeley"
 alias nosymtheme_compliance="rm ~/Sites/pantheon_v2/compliance/sites/all/themes/berkeley"
+alias nosymtheme_ethics="rm ~/Sites/pantheon_v2/ethics3/sites/all/themes/berkeley"
+alias nosymtheme_chanc="rm ~/Sites/pantheon_v2/chancellor/sites/all/themes/berkeley"
+alias nosymtheme_acads="rm ~/Sites/pantheon_v2/acads/sites/all/themes/berkeley"
+alias nosymtheme_ccac="rm ~/Sites/pantheon_v2/ccac/sites/all/themes/berkeley"
+alias nosymtheme_audit="rm ~/Sites/pantheon_v2/audit/sites/all/themes/berkeley"
+alias nosymtheme_mypower="rm ~/Sites/pantheon_v2/mypower111/sites/all/themes/berkeley"
 
 #copy latest theme using rsync
+rsynctheme() {
+  if [ -z "$1" ]
+  then
+    echo "Needs one parameter"
+  else
+    rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
+  fi
+}
+
 alias rsynctheme_ot="rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/ot/sites/all/themes/berkeley"
 alias rsynctheme_risk="rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/riskservices/sites/all/themes/berkeley"
-alias rsynctheme_staff="rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/staffombuds/sites/all/themes/berkeley"
+alias rsynctheme_staffombuds="rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/staffombuds/sites/all/themes/berkeley"
 alias rsynctheme_compliance="rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/compliance/sites/all/themes/berkeley"
+alias rsynctheme_ethics="rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/ethics3/sites/all/themes/berkeley"
+alias rsynctheme_chanc="rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/chancellor/sites/all/themes/berkeley"
+alias rsynctheme_acads="rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/acads/sites/all/themes/berkeley"
+alias rsynctheme_ccac="rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/ccac/sites/all/themes/berkeley"
+alias rsynctheme_audit="rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/audit/sites/all/themes/berkeley"
+alias rsynctheme_mypower="rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/mypower111/sites/all/themes/berkeley"
