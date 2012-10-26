@@ -1,5 +1,10 @@
 #Aliases
 
+#shell options - uncomment to use
+#shopt -s extglob
+#shopt -u extglob
+#shopt -s extglob dotglob
+
 #bash
 alias h='history'
 alias ll='ls -al'
@@ -59,6 +64,10 @@ reptheme() {
   then
     echo "Needs one parameter"
   else
+    #make backup of existing theme including hidden files
+    rsync -av ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley/ ~/backups/theme_backups/berkeley_$1_`date +%F_%H-%M-%S` &&
+
+    #remove and symlink
     git rm -r ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley &&
     rm -Rf ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley &&
     ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
@@ -76,7 +85,7 @@ applytheme() {
   fi
 }
 
-#remove existing theme
+#remove existing theme -- all files
 rmtheme() {
   if [ -z "$1" ]
   then
@@ -86,16 +95,6 @@ rmtheme() {
   fi
 }
 
-alias rmtheme_ot="git rm -r ~/Sites/pantheon_v2/ot/sites/all/themes/berkeley"
-alias rmtheme_risk="git rm -r ~/Sites/pantheon_v2/riskservices/sites/all/themes/berkeley"
-alias rmtheme_staffombuds="git rm -r ~/Sites/pantheon_v2/staffombuds/sites/all/themes/berkeley"
-alias rmtheme_compliance="git rm -r ~/Sites/pantheon_v2/compliance/sites/all/themes/berkeley"
-alias rmtheme_ethics="git rm -r ~/Sites/pantheon_v2/ethics3/sites/all/themes/berkeley"
-alias rmtheme_chanc="git rm -r ~/Sites/pantheon_v2/chancellor/sites/all/themes/berkeley"
-alias rmtheme_acads="git rm -r ~/Sites/pantheon_v2/acads/sites/all/themes/berkeley"
-alias rmtheme_ccac="git rm -r ~/Sites/pantheon_v2/ccac/sites/all/themes/berkeley"
-alias rmtheme_audit="git rm -r ~/Sites/pantheon_v2/audit/sites/all/themes/berkeley"
-alias rmtheme_mypower="git rm -r ~/Sites/pantheon_v2/mypower111/sites/all/themes/berkeley"
 
 #run rm -Rf if needed (if git rm -r doesn't remove cleanly)
 cleanup() {
@@ -107,16 +106,6 @@ cleanup() {
   fi
 }
 
-alias cleanup_ot="rm -Rf ~/Sites/pantheon_v2/ot/sites/all/themes/berkeley"
-alias cleanup_risk="rm -Rf ~/Sites/pantheon_v2/riskservices/sites/all/themes/berkeley"
-alias cleanup_staffombuds="rm -Rf ~/Sites/pantheon_v2/staffombuds/sites/all/themes/berkeley"
-alias cleanup_compliance="rm -Rf ~/Sites/pantheon_v2/compliance/sites/all/themes/berkeley"
-alias cleanup_ethics="rm -Rf ~/Sites/pantheon_v2/ethics3/sites/all/themes/berkeley"
-alias cleanup_chanc="rm -Rf ~/Sites/pantheon_v2/chancellor/sites/all/themes/berkeley"
-alias cleanup_acads="rm -Rf ~/Sites/pantheon_v2/acads/sites/all/themes/berkeley"
-alias cleanup_ccac="rm -Rf ~/Sites/pantheon_v2/ccac/sites/all/themes/berkeley"
-alias cleanup_audit="rm -Rf ~/Sites/pantheon_v2/audit/sites/all/themes/berkeley"
-alias cleanup_mypower="rm -Rf ~/Sites/pantheon_v2/mypower111/sites/all/themes/berkeley"
 
 #symlink to berkeley theme
 symtheme() {
@@ -128,16 +117,6 @@ symtheme() {
   fi
 }
 
-alias symtheme_ot="ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/ot/sites/all/themes/berkeley"
-alias symtheme_risk="ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/riskservices/sites/all/themes/berkeley"
-alias symtheme_staffombuds="ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/staffombuds/sites/all/themes/berkeley"
-alias symtheme_compliance="ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/compliance/sites/all/themes/berkeley"
-alias symtheme_ethics="ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/ethics3/sites/all/themes/berkeley"
-alias symtheme_chanc="ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/chancellor/sites/all/themes/berkeley"
-alias symtheme_acads="ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/acads/sites/all/themes/berkeley"
-alias symtheme_ccac="ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/ccac/sites/all/themes/berkeley"
-alias symtheme_audit="ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/audit/sites/all/themes/berkeley"
-alias symtheme_mypower="ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/mypower111/sites/all/themes/berkeley"
 
 #remove symlink to berkeley theme
 nosymtheme() {
@@ -149,34 +128,73 @@ nosymtheme() {
   fi
 }
 
-alias nosymtheme_ot="rm ~/Sites/pantheon_v2/ot/sites/all/themes/berkeley"
-alias nosymtheme_risk="rm ~/Sites/pantheon_v2/riskservices/sites/all/themes/berkeley"
-alias nosymtheme_staffombuds="rm ~/Sites/pantheon_v2/staffombuds/sites/all/themes/berkeley"
-alias nosymtheme_compliance="rm ~/Sites/pantheon_v2/compliance/sites/all/themes/berkeley"
-alias nosymtheme_ethics="rm ~/Sites/pantheon_v2/ethics3/sites/all/themes/berkeley"
-alias nosymtheme_chanc="rm ~/Sites/pantheon_v2/chancellor/sites/all/themes/berkeley"
-alias nosymtheme_acads="rm ~/Sites/pantheon_v2/acads/sites/all/themes/berkeley"
-alias nosymtheme_ccac="rm ~/Sites/pantheon_v2/ccac/sites/all/themes/berkeley"
-alias nosymtheme_audit="rm ~/Sites/pantheon_v2/audit/sites/all/themes/berkeley"
-alias nosymtheme_mypower="rm ~/Sites/pantheon_v2/mypower111/sites/all/themes/berkeley"
 
 #copy latest theme using rsync
+#for rsync:
+#Use trailing slash on source to copy contents of directory without recreating directory
+#Exclude files listed in $EXCLUDE_FILE; path is absolute
+
+EXCLUDE_FILE="/Users/klu/bin/dotfiles/bash/exclude-list.txt"
+
 rsynctheme() {
   if [ -z "$1" ]
   then
     echo "Needs one parameter"
   else
+    #exclude dotfiles
     rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
+
+    #to use exclude file comment above and uncomment blow
+    #rsync -avh --exclude-from $EXCLUDE_FILE ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
   fi
 }
 
-alias rsynctheme_ot="rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/ot/sites/all/themes/berkeley"
-alias rsynctheme_risk="rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/riskservices/sites/all/themes/berkeley"
-alias rsynctheme_staffombuds="rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/staffombuds/sites/all/themes/berkeley"
-alias rsynctheme_compliance="rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/compliance/sites/all/themes/berkeley"
-alias rsynctheme_ethics="rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/ethics3/sites/all/themes/berkeley"
-alias rsynctheme_chanc="rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/chancellor/sites/all/themes/berkeley"
-alias rsynctheme_acads="rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/acads/sites/all/themes/berkeley"
-alias rsynctheme_ccac="rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/ccac/sites/all/themes/berkeley"
-alias rsynctheme_audit="rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/audit/sites/all/themes/berkeley"
-alias rsynctheme_mypower="rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/mypower111/sites/all/themes/berkeley"
+checkcustom() {
+  if [ -z "$1" ]
+  then
+    echo "Needs one parameter"
+  elif
+    grep -x "environment = :production" ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley/config.rb ||
+    [ -f ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley/sass/styles.scss ] ||
+    [ -f ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley/css/styles.css ] ||
+    [ -f ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley/css/local.css ]
+  then
+    echo "custom files may exist"
+    find ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley \
+    \( -name config.rb -o -name berkeley.info -o -name styles.scss -o -name styles.css -o -name local.css \) \
+    -print0 | xargs -0 ls
+  else
+    echo "may not have any custom files"
+  fi
+}
+
+findcustom() {
+  if [ -z "$1" ]
+  then
+    echo "Needs one parameter"
+  else
+    find ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley \
+    \( -name config.rb -o -name berkeley.info -o -name styles.scss -o -name styles.css -o -name local.css \) \
+    -print0 | xargs -0 ls
+
+  #find .txt files; prune those in css directory
+  #find ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley -maxdepth 1 -name css -prune -o -name '*.txt' -print0 | xargs -0 ls
+
+  fi
+}
+
+#experimental
+tester() {
+  if [ -z "$1" ]
+  then
+    echo "Needs one parameter"
+  else
+    echo "This is a test"
+    #shopt -s extglob && #Note: Required, but already declared at top of this file
+    #find ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley/+(config.rb) &&
+    #rm -Rfv ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley/!(config.rb) &&
+    #rm -Rfv ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley/.??* #remove hidden files #or use shopt -s extglob dotglob
+    #git ls-files --deleted -z | xargs -0 git rm &&  #git rm deleted files
+    #shopt -u extglob
+  fi
+}
