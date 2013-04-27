@@ -3,8 +3,8 @@
 #Sublime Text 2
 export EDITOR='subl -w'
 
-#PATH
-#export PATH=$PATH:~/bin
+#Bundler -- using "bundle install --binstubs .bundle/bin"
+export PATH="./.bundle/bin:$PATH"
 
 #Brew packages
 export PATH="/usr/local/bin:/usr/local/sbin:~/bin:$PATH"
@@ -15,3 +15,6 @@ eval "$(rbenv init -)"
 
 #acquia drupal
 PATH=~/bin:/Applications/acquia-drupal/mysql/bin:/Applications/acquia-drupal/php/bin:/Applications/acquia-drupal/apache/bin:$PATH
+
+#PATH
+#export PATH=$PATH:~/bin

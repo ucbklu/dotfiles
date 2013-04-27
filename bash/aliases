@@ -13,6 +13,50 @@ alias rel='source ~/.bashrc'
 alias c='clear'
 alias md='mkdir -p'
 
+#cd directories
+alias cdr='cd ~/RubymineProjects'
+alias cdg='cd ~/github'
+alias cdb='cd ~/github/berkeley-7.x'
+alias cdp='cd ~/Sites/pantheon_v2'
+alias cdbkp='cd ~/Sites/backups'
+
+#ps aux with grep
+psx() {
+  ps aux | grep "$*"
+}
+
+# postgres
+alias pg_load="launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist"
+alias pg_unload="launchctl unload -w ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist"
+alias pg_start="pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start"
+alias pg_stop="pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log stop"
+alias pg_start_test="pg_ctl -D /usr/local/var/pg_data -l /tmp/logfile start"
+alias pg_stop_test="pg_ctl -D /usr/local/var/pg_data -l /tmp/logfile stop"
+
+#pg_dump
+pgd() {
+  if [ -z "$1" ]
+  then
+    echo "Needs two parameters: db and filename.sql"
+  else
+    pg_dump $1 > ~/Ruby/backups/psql_bkps/$2
+  fi
+}
+
+#pg - restore from bkp
+pgr() {
+  if [ -z "$1" ]
+  then
+    echo "Needs two parameters: db and filename.sql"
+  else
+    psql $1 > ~/Ruby/backups/psql_bkps/$2
+  fi
+}
+
+#bundler -- use for all commands except rails, or use bundle install --binstubs
+alias be="bundle exec"
+alias bi="bundle install --binstubs .bundle/bin"
+
 #mkdir and cd
 function take {
   mkdir $1
@@ -38,31 +82,119 @@ alias gc='git commit -v'
 alias gcm='git commit -v -m'
 alias gca='git commit -v -a'
 alias gd='git diff'
-alias gco='git checkout'
+alias gco='git checkout' #switch to different branch
+alias gcob='git checkout -b' #create a new branch
 alias gl='git pull'
 alias gp='git push'
-alias gb='git branch'
+alias gb='git branch' #show branches
+alias gbva='git branch -va' #show branches - verbose/all (incl remote)
+alias gbd='git branch -d' #delete branch for cleanup
+alias gbD='git branch -D' #abandon branch
 alias glg='git log'
+alias glgp='git log --pretty=format:"%h - %an, %ar : %s"'
+alias gi='git init'
+alias gm='git merge'
+alias gr='git remote -v'
+alias grso='git remote show origin' #show remote-local tracking
+alias gfup='git fetch upstream'
+alias gs='git stash'
+alias gsa='git stash apply'
+alias gsl='git stash list'
+alias gsd='git stash drop' #use git stash clear to delete all stored stashes
+alias gsp='git stash pop' #apply stash and drop from stack (gsa + gsd)
 
 #commit pending changes and quote all args as message
 gg() {
   git commit -v -a -m "$*"
 }
 
-#cd directories
-alias cdg='cd ~/github'
-alias cdb='cd ~/github/berkeley-7.x'
-alias cdp='cd ~/Sites/pantheon_v2'
-alias cdbkp='cd ~/Sites/backups'
+#git push to a specific origin branch; -u flag to set upstream
+gpob() {
+  if [ -z "$1" ]
+  then
+    echo "Needs one parameter: branch name"
+  else
+    git push -u origin $1
+  fi
+}
 
+#drupal patches
+p() {
+  if [ -z "$1" ]
+  then
+    echo "Needs two parameters: site and patchfile"
+  else
+    patch -p1 < ~/Sites/pantheon_v2/$1/sites/all/modules/PATCHES/$2
+  fi
+}
 
-#berkeley theme updates
+p_strip() {
+  if [ -z "$1" ]
+  then
+    echo "Needs three parameters: site, patchfile, p value"
+  else
+    patch -p$3 < ~/Sites/pantheon_v2/$1/sites/all/modules/PATCHES/$2
+  fi
+}
+
+ptest() {
+  if [ -z "$1" ]
+  then
+    echo "Needs two parameters: site and patchfile"
+  else
+    patch -p1 --dry-run < ~/Sites/pantheon_v2/$1/sites/all/modules/PATCHES/$2
+  fi
+}
+
+ptest_strip() {
+  if [ -z "$1" ]
+  then
+    echo "Needs three parameters: site, patchfile, p value"
+  else
+    patch -p$3 --dry-run < ~/Sites/pantheon_v2/$1/sites/all/modules/PATCHES/$2
+  fi
+}
+
+#berkeley theme updates - cd to appropriate folder (for git commands)
+
+#replace existing theme and copy latest theme using rsync
+updatetheme() {
+  if [ -z "$1" ]
+  then
+    echo "Needs one parameter: site"
+  else
+    #make backup of existing theme including hidden files
+    rsync -av ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley/ ~/backups/theme_backups/berkeley_$1_`date +%F_%H-%M-%S` &&
+
+    #remove and rsync
+    git rm -r ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley &&
+    rm -Rf ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley &&
+    rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
+  fi
+}
+
+#replace existing theme and copy latest theme using rsync; apply git rm -rf to override existing changed files
+updatetheme_force() {
+  if [ -z "$1" ]
+  then
+    echo "Needs one parameter: site"
+  else
+    #make backup of existing theme including hidden files
+    rsync -av ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley/ ~/backups/theme_backups/berkeley_$1_`date +%F_%H-%M-%S` &&
+
+    #remove and rsync
+    git rm -rf ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley &&
+    rm -Rf ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley &&
+    rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
+  fi
+}
+
 
 #replace existing theme with symlink: takes $arg1
 reptheme() {
   if [ -z "$1" ]
   then
-    echo "Needs one parameter"
+    echo "Needs one parameter: site"
   else
     #make backup of existing theme including hidden files
     rsync -av ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley/ ~/backups/theme_backups/berkeley_$1_`date +%F_%H-%M-%S` &&
@@ -74,11 +206,27 @@ reptheme() {
   fi
 }
 
+#replace existing theme with symlink: takes $arg1; apply git rm -rf to override existing changed files
+reptheme_force() {
+  if [ -z "$1" ]
+  then
+    echo "Needs one parameter: site"
+  else
+    #make backup of existing theme including hidden files
+    rsync -av ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley/ ~/backups/theme_backups/berkeley_$1_`date +%F_%H-%M-%S` &&
+
+    #remove and symlink
+    git rm -rf ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley &&
+    rm -Rf ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley &&
+    ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
+  fi
+}
+
 #remove symlink and copy latest theme using rsync
 applytheme() {
   if [ -z "$1" ]
   then
-    echo "Needs one parameter"
+    echo "Needs one parameter: site"
   else
     rm ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley &&
     rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
@@ -89,7 +237,7 @@ applytheme() {
 rmtheme() {
   if [ -z "$1" ]
   then
-    echo "Needs one parameter"
+    echo "Needs one parameter: site"
   else
     git rm -r ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
   fi
@@ -100,7 +248,7 @@ rmtheme() {
 cleanup() {
   if [ -z "$1" ]
   then
-    echo "Needs one parameter"
+    echo "Needs one parameter: site"
   else
     rm -Rf ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
   fi
@@ -111,7 +259,7 @@ cleanup() {
 symtheme() {
   if [ -z "$1" ]
   then
-    echo "Needs one parameter"
+    echo "Needs one parameter: site"
   else
     ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
   fi
@@ -122,37 +270,16 @@ symtheme() {
 nosymtheme() {
   if [ -z "$1" ]
   then
-    echo "Needs one parameter"
+    echo "Needs one parameter: site"
   else
     rm ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
-  fi
-}
-
-
-#copy latest theme using rsync
-#for rsync:
-#Use trailing slash on source to copy contents of directory without recreating directory
-#Exclude files listed in $EXCLUDE_FILE; path is absolute
-
-EXCLUDE_FILE="/Users/klu/bin/dotfiles/bash/exclude-list.txt"
-
-rsynctheme() {
-  if [ -z "$1" ]
-  then
-    echo "Needs one parameter"
-  else
-    #exclude dotfiles
-    rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
-
-    #to use exclude file comment above and uncomment blow
-    #rsync -avh --exclude-from $EXCLUDE_FILE ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
   fi
 }
 
 checkcustom() {
   if [ -z "$1" ]
   then
-    echo "Needs one parameter"
+    echo "Needs one parameter: site"
   elif
     grep -x "environment = :production" ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley/config.rb ||
     [ -f ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley/sass/styles.scss ] ||
@@ -171,7 +298,7 @@ checkcustom() {
 findcustom() {
   if [ -z "$1" ]
   then
-    echo "Needs one parameter"
+    echo "Needs one parameter: site"
   else
     find ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley \
     \( -name config.rb -o -name berkeley.info -o -name styles.scss -o -name styles.css -o -name local.css \) \
@@ -183,11 +310,34 @@ findcustom() {
   fi
 }
 
-#experimental
+#Experimental
+
+#Use updatetheme instead of rsynctheme for existing themes that should be backed up
+#copy latest theme using rsync
+#for rsync:
+#Use trailing slash on source to copy contents of directory without recreating directory
+#Exclude files listed in $EXCLUDE_FILE; path is absolute
+
+EXCLUDE_FILE="/Users/klu/bin/dotfiles/bash/exclude-list.txt"
+
+rsynctheme() {
+  if [ -z "$1" ]
+  then
+    echo "Needs one parameter: site"
+  else
+    #exclude dotfiles
+    rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
+
+    #to use exclude file comment above and uncomment blow
+    #rsync -avh --exclude-from $EXCLUDE_FILE ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
+  fi
+}
+
+
 tester() {
   if [ -z "$1" ]
   then
-    echo "Needs one parameter"
+    echo "Needs one parameter: site"
   else
     echo "This is a test"
     #shopt -s extglob && #Note: Required, but already declared at top of this file
