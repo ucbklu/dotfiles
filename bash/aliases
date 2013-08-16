@@ -18,7 +18,9 @@ alias cdr='cd ~/RubymineProjects'
 alias cdg='cd ~/github'
 alias cdb='cd ~/github/berkeley-7.x'
 alias cdp='cd ~/Sites/pantheon_v2'
+alias cda='cd ~/Angular'
 alias cdbkp='cd ~/Sites/backups'
+alias cdd='cd ~/bin/dotfiles'
 
 #ps aux with grep
 psx() {
@@ -64,8 +66,11 @@ function take {
 }
 
 #sublime
-alias ea='subl -w ~/bin/dotfiles/bash/aliases & rel'
-alias ee='subl ~/bin/dotfiles/bash/env'
+alias sn='subl -n'  #open in new window
+alias sa='subl -a'  #add folder to current window
+alias ea='subl -w ~/bin/dotfiles/bash/aliases & rel'  #edit aliases
+alias ee='subl ~/bin/dotfiles/bash/env'  #edit env
+
 
 #finder
 alias o='open . &'
@@ -73,6 +78,7 @@ alias ff='open -a Firefox'
 
 #drush
 alias drush='~/drush/drush'
+alias pda='mv ~/pantheon.aliases.drushrc.php ~/.drush/pantheon.aliases.drushrc.php'
 
 #git
 alias g='git status'
@@ -82,6 +88,9 @@ alias gc='git commit -v'
 alias gcm='git commit -v -m'
 alias gca='git commit -v -a'
 alias gd='git diff'
+alias gdb='git diff -b' #git diff: ignore space change
+alias gdR='git diff -R' #git diff: highlight whitespace changes
+alias gav='git apply -v' #git apply -v: apply patch in git repo; use --stat and --check for pre-run
 alias gco='git checkout' #switch to different branch
 alias gcob='git checkout -b' #create a new branch
 alias gl='git pull'
@@ -94,8 +103,10 @@ alias glg='git log'
 alias glgp='git log --pretty=format:"%h - %an, %ar : %s"'
 alias gi='git init'
 alias gm='git merge'
+alias greb='git rebase'
 alias gr='git remote -v'
 alias grso='git remote show origin' #show remote-local tracking
+alias gfo='git fetch origin'
 alias gfup='git fetch upstream'
 alias gs='git stash'
 alias gsa='git stash apply'
@@ -155,6 +166,16 @@ ptest_strip() {
   fi
 }
 
+p_reverse() {
+  if [ -z "$1" ]
+  then
+    echo "Needs two parameters: site and patchfile"
+  else
+    patch -p1 -R < ~/Sites/pantheon_v2/$1/sites/all/modules/PATCHES/$2
+  fi
+}
+
+
 #berkeley theme updates - cd to appropriate folder (for git commands)
 
 #replace existing theme and copy latest theme using rsync
@@ -189,6 +210,16 @@ updatetheme_force() {
   fi
 }
 
+#add Berkeley theme if it doesn't yet exist
+addtheme() {
+  if [ -z "$1" ]
+  then
+    echo "Needs one parameter: site"
+  else
+    #rsync
+    rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
+  fi
+}
 
 #replace existing theme with symlink: takes $arg1
 reptheme() {
