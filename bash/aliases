@@ -92,13 +92,14 @@ alias gdb='git diff -b' #git diff: ignore space change
 alias gdR='git diff -R' #git diff: highlight whitespace changes
 alias gav='git apply -v' #git apply -v: apply patch in git repo; use --stat and --check for pre-run
 alias gco='git checkout' #switch to different branch
-alias gcob='git checkout -b' #create a new branch
+alias gcob='git checkout -b' #create a new branch; use gcob branchname origin/branchname to create local from origin branch
 alias gl='git pull'
 alias gp='git push'
 alias gb='git branch' #show branches
 alias gbva='git branch -va' #show branches - verbose/all (incl remote)
 alias gbd='git branch -d' #delete branch for cleanup
 alias gbD='git branch -D' #abandon branch
+alias gbu='git branch -u' #set upstream branch, e.g., origin/branchname; -u short for --set-upstream-to; see also gpob()
 alias glg='git log'
 alias glgp='git log --pretty=format:"%h - %an, %ar : %s"'
 alias gi='git init'
@@ -129,7 +130,8 @@ gpob() {
   fi
 }
 
-#drupal patches
+#### Drupal Patches ####
+
 p() {
   if [ -z "$1" ]
   then
@@ -176,9 +178,11 @@ p_reverse() {
 }
 
 
-#berkeley theme updates - cd to appropriate folder (for git commands)
+#### Berkeley Theme Updates ####
 
-#replace existing theme and copy latest theme using rsync
+#cd to appropriate folder (for git commands)
+
+#replace existing theme and copy latest theme using rsync: takes $arg1
 updatetheme() {
   if [ -z "$1" ]
   then
@@ -194,7 +198,7 @@ updatetheme() {
   fi
 }
 
-#replace existing theme and copy latest theme using rsync; apply git rm -rf to override existing changed files
+#replace existing theme and copy latest theme using rsync; apply git rm -rf to override existing changed files: takes $arg1
 updatetheme_force() {
   if [ -z "$1" ]
   then
@@ -210,7 +214,7 @@ updatetheme_force() {
   fi
 }
 
-#add Berkeley theme if it doesn't yet exist
+#add Berkeley theme if it doesn't yet exist: takes $arg1
 addtheme() {
   if [ -z "$1" ]
   then
@@ -237,7 +241,7 @@ reptheme() {
   fi
 }
 
-#replace existing theme with symlink: takes $arg1; apply git rm -rf to override existing changed files
+#replace existing theme with symlink: takes $arg1; apply git rm -rf to override existing changed files: takes $arg1
 reptheme_force() {
   if [ -z "$1" ]
   then
@@ -253,7 +257,7 @@ reptheme_force() {
   fi
 }
 
-#remove symlink and copy latest theme using rsync
+#remove symlink and copy latest theme using rsync: takes $arg1
 applytheme() {
   if [ -z "$1" ]
   then
@@ -264,7 +268,7 @@ applytheme() {
   fi
 }
 
-#remove existing theme -- all files
+#remove existing theme -- all files: takes $arg1
 rmtheme() {
   if [ -z "$1" ]
   then
@@ -275,7 +279,7 @@ rmtheme() {
 }
 
 
-#run rm -Rf if needed (if git rm -r doesn't remove cleanly)
+#run rm -Rf if needed (if git rm -r doesn't remove cleanly): takes $arg1
 cleanup() {
   if [ -z "$1" ]
   then
@@ -286,7 +290,7 @@ cleanup() {
 }
 
 
-#symlink to berkeley theme
+#symlink to berkeley theme: takes $arg1
 symtheme() {
   if [ -z "$1" ]
   then
@@ -297,7 +301,7 @@ symtheme() {
 }
 
 
-#remove symlink to berkeley theme
+#remove symlink to berkeley theme: takes $arg1
 nosymtheme() {
   if [ -z "$1" ]
   then
@@ -307,6 +311,7 @@ nosymtheme() {
   fi
 }
 
+#check for custom theme files: takes $arg1
 checkcustom() {
   if [ -z "$1" ]
   then
@@ -326,6 +331,7 @@ checkcustom() {
   fi
 }
 
+#find custom theme files: takes $arg1
 findcustom() {
   if [ -z "$1" ]
   then
@@ -341,7 +347,62 @@ findcustom() {
   fi
 }
 
-#Experimental
+#### Other GitHub Repos ####
+
+#symlink to github repo: takes $arg1 (site) and $arg2 (module)
+symlinkrepo() {
+  if [ -z "$1" ]
+  then
+    echo "Needs two parameters: site and module"
+  else
+    ln -s ~/github/$2 ~/Sites/pantheon_v2/$1/sites/all/modules/$2
+  fi
+}
+
+#remove symlink and copy latest repo using rsync: takes $arg1 (site) and $arg2 (module)
+applyrepo() {
+  if [ -z "$1" ]
+  then
+    echo "Needs two parameters: site and module"
+  else
+    rm ~/Sites/pantheon_v2/$1/sites/all/modules/$2 &&
+    rsync -avh --exclude=".*/" ~/github/$2/ ~/Sites/pantheon_v2/$1/sites/all/modules/$2
+  fi
+}
+
+#replace existing repo with symlink: takes $arg1 (site) and $arg2 (module)
+reprepo() {
+  if [ -z "$1" ]
+  then
+    echo "Needs two parameters: site and module"
+  else
+    #make backup of existing repo including hidden files
+    rsync -av ~/Sites/pantheon_v2/$1/sites/all/modules/$2/ ~/backups/module_backups/$1_$2_`date +%F_%H-%M-%S` &&
+
+    #remove and symlink
+    git rm -r ~/Sites/pantheon_v2/$1/sites/all/modules/$2 &&
+    rm -Rf ~/Sites/pantheon_v2/$1/sites/all/modules/$2 &&
+    ln -s ~/github/$2 ~/Sites/pantheon_v2/$1/sites/all/modules/$2
+  fi
+}
+
+#replace existing repo with symlink if module not yet committed to git: takes $arg1 (site) and $arg2 (module)
+reprepo_ng() {
+  if [ -z "$1" ]
+  then
+    echo "Needs two parameters: site and module"
+  else
+    #make backup of existing repo including hidden files
+    rsync -av ~/Sites/pantheon_v2/$1/sites/all/modules/$2/ ~/backups/module_backups/$1_$2_`date +%F_%H-%M-%S` &&
+
+    #remove and symlink
+    #git rm -r ~/Sites/pantheon_v2/$1/sites/all/modules/$2 &&
+    rm -Rf ~/Sites/pantheon_v2/$1/sites/all/modules/$2 &&
+    ln -s ~/github/$2 ~/Sites/pantheon_v2/$1/sites/all/modules/$2
+  fi
+}
+
+#### Experimental ####
 
 #Use updatetheme instead of rsynctheme for existing themes that should be backed up
 #copy latest theme using rsync
@@ -363,7 +424,6 @@ rsynctheme() {
     #rsync -avh --exclude-from $EXCLUDE_FILE ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
   fi
 }
-
 
 tester() {
   if [ -z "$1" ]
