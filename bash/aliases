@@ -1,4 +1,5 @@
-#Aliases
+#!/bin/bash
+# alias.sh
 
 #shell options - uncomment to use
 #shopt -s extglob
@@ -41,17 +42,27 @@ pgd() {
   then
     echo "Needs two parameters: db and filename.sql"
   else
-    pg_dump $1 > ~/Ruby/backups/psql_bkps/$2
+    g
   fi
 }
 
-#pg - restore from bkp
+#pgr - restore from local bkp
 pgr() {
   if [ -z "$1" ]
   then
     echo "Needs two parameters: db and filename.sql"
   else
-    psql $1 > ~/Ruby/backups/psql_bkps/$2
+    psql $1 < ~/Ruby/backups/psql_bkps/$2
+  fi
+}
+
+#pgrh - restore from Heroku bkp
+pgrh() {
+  if [ -z "$1" ]
+  then
+    echo "Needs two parameters: db and filename.sql"
+  else
+    psql $1 >   $2
   fi
 }
 
@@ -80,10 +91,82 @@ alias ff='open -a Firefox'
 alias drush='~/drush/drush'
 alias pda='mv ~/pantheon.aliases.drushrc.php ~/.drush/pantheon.aliases.drushrc.php'
 
+#drush basic
+d() {
+  if [ -z "$1" ]
+  then
+    echo "Needs two parameters: site and command"
+  else
+    drush @$1 $2
+  fi
+}
+
+#drush current site
+dc() {
+  if [ -z "$1" ]
+  then
+    echo "Needs one parameter: command"
+  else
+    local SITE=$(basename `pwd`)
+    drush ${SITE}.localhost $1
+  fi
+}
+
+#drush current site - clear cache all
+dcc() {
+  local SITE=$(basename `pwd`)
+  drush ${SITE}.localhost cc all
+}
+
+
+#drush - sql-dump
+dbkp() {
+  if [ -z "$1" ]
+  then
+    echo "Needs two parameters: site and filename.sql"
+  else
+    drush @$1 sql-dump --result-file=~/temp/drush_backups/$2
+  fi
+}
+
+#drush - import sql
+dimport() {
+  if [ -z "$1" ]
+  then
+    echo "Needs two parameters: site and filename.sql"
+  else
+    `drush @$1 sql-connect` < ~/temp/drush_backups/$2
+  fi
+}
+
+#drush - drop and import sql
+ddropimport() {
+  if [ -z "$1" ]
+  then
+    echo "Needs two parameters: site and filename.sql"
+  else
+    drush @$1 sql-drop
+    drush @$1 sqlc < ~/temp/drush_backups/$2
+  fi
+}
+
+#drush - sql query
+dquery() {
+  if [ -z "$1" ]
+  then
+    echo "Needs two parameters: site and quoted query"
+  else
+    drush @$1 sqlq "$2"
+  fi
+}
+
+
 #git
 alias g='git status'
 alias ga='git add'
-alias gaa='git add -A'
+alias gaa='git add -A' #equivalent to "git add ." and "git add -u". See http://stackoverflow.com/questions/572549/difference-of-git-add-a-and-git-add
+alias gac='git add .' #add created/modified to index, not deleted.
+alias gau='git add -u' #add deleted/modified to index, not new.
 alias gc='git commit -v'
 alias gcm='git commit -v -m'
 alias gca='git commit -v -a'
@@ -130,7 +213,36 @@ gpob() {
   fi
 }
 
+#git remote add: e.g., gra upstream git@github.com:ucbdrupal/migrate_hrweb.git
+gra() {
+  if [ -z "$1" ]
+  then
+    echo "Needs two parameters: remote-name URL"
+  else
+    git remote add $1 $2
+  fi
+}
+
+#git remote set-url: e.g., grs upstream git@github.com:ucbdrupal/migrate_hrweb.git
+grs() {
+  if [ -z "$1" ]
+  then
+    echo "Needs two parameters: remote-name URL"
+  else
+    git remote set-url $1 $2
+  fi
+}
+
 #### Drupal Patches ####
+
+copypatch() {
+  if [ -z "$1" ]
+  then
+    echo "Needs two parameters: site and patchfile"
+  else
+    cp ~/temp/patches/$2 ~/Sites/pantheon_v2/$1/sites/all/modules/PATCHES/$2
+  fi
+}
 
 p() {
   if [ -z "$1" ]
