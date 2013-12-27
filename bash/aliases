@@ -18,7 +18,7 @@ alias md='mkdir -p'
 alias cdr='cd ~/RubymineProjects'
 alias cdg='cd ~/github'
 alias cdb='cd ~/github/berkeley-7.x'
-alias cdp='cd ~/Sites/pantheon_v2'
+alias cdp='cd ~/Sites/pantheon'
 alias cda='cd ~/Angular'
 alias cdbkp='cd ~/Sites/backups'
 alias cdd='cd ~/bin/dotfiles'
@@ -33,8 +33,8 @@ alias pg_load="launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.postgresql
 alias pg_unload="launchctl unload -w ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist"
 alias pg_start="pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start"
 alias pg_stop="pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log stop"
-alias pg_start_test="pg_ctl -D /usr/local/var/pg_data -l /tmp/logfile start"
-alias pg_stop_test="pg_ctl -D /usr/local/var/pg_data -l /tmp/logfile stop"
+#alias pg_start_test="pg_ctl -D /usr/local/var/pg_data -l /tmp/logfile start"
+#alias pg_stop_test="pg_ctl -D /usr/local/var/pg_data -l /tmp/logfile stop"
 
 #pg_dump
 pgd() {
@@ -88,8 +88,7 @@ alias o='open . &'
 alias ff='open -a Firefox'
 
 #drush
-alias drush='~/drush/drush'
-alias pda='mv ~/pantheon.aliases.drushrc.php ~/.drush/pantheon.aliases.drushrc.php'
+alias drush6='~/github/drush/drush'
 
 #drush basic
 d() {
@@ -240,7 +239,7 @@ copypatch() {
   then
     echo "Needs two parameters: site and patchfile"
   else
-    cp ~/temp/patches/$2 ~/Sites/pantheon_v2/$1/sites/all/modules/PATCHES/$2
+    cp ~/temp/patches/$2 ~/Sites/pantheon/$1/sites/all/modules/PATCHES/$2
   fi
 }
 
@@ -249,7 +248,7 @@ p() {
   then
     echo "Needs two parameters: site and patchfile"
   else
-    patch -p1 < ~/Sites/pantheon_v2/$1/sites/all/modules/PATCHES/$2
+    patch -p1 < ~/Sites/pantheon/$1/sites/all/modules/PATCHES/$2
   fi
 }
 
@@ -258,7 +257,7 @@ p_strip() {
   then
     echo "Needs three parameters: site, patchfile, p value"
   else
-    patch -p$3 < ~/Sites/pantheon_v2/$1/sites/all/modules/PATCHES/$2
+    patch -p$3 < ~/Sites/pantheon/$1/sites/all/modules/PATCHES/$2
   fi
 }
 
@@ -267,7 +266,7 @@ ptest() {
   then
     echo "Needs two parameters: site and patchfile"
   else
-    patch -p1 --dry-run < ~/Sites/pantheon_v2/$1/sites/all/modules/PATCHES/$2
+    patch -p1 --dry-run < ~/Sites/pantheon/$1/sites/all/modules/PATCHES/$2
   fi
 }
 
@@ -276,7 +275,7 @@ ptest_strip() {
   then
     echo "Needs three parameters: site, patchfile, p value"
   else
-    patch -p$3 --dry-run < ~/Sites/pantheon_v2/$1/sites/all/modules/PATCHES/$2
+    patch -p$3 --dry-run < ~/Sites/pantheon/$1/sites/all/modules/PATCHES/$2
   fi
 }
 
@@ -285,7 +284,7 @@ p_reverse() {
   then
     echo "Needs two parameters: site and patchfile"
   else
-    patch -p1 -R < ~/Sites/pantheon_v2/$1/sites/all/modules/PATCHES/$2
+    patch -p1 -R < ~/Sites/pantheon/$1/sites/all/modules/PATCHES/$2
   fi
 }
 
@@ -301,12 +300,12 @@ updatetheme() {
     echo "Needs one parameter: site"
   else
     #make backup of existing theme including hidden files
-    rsync -av ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley/ ~/backups/theme_backups/berkeley_$1_`date +%F_%H-%M-%S` &&
+    rsync -av ~/Sites/pantheon/$1/sites/all/themes/berkeley/ ~/backups/theme_backups/berkeley_$1_`date +%F_%H-%M-%S` &&
 
     #remove and rsync
-    git rm -r ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley &&
-    rm -Rf ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley &&
-    rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
+    git rm -r ~/Sites/pantheon/$1/sites/all/themes/berkeley &&
+    rm -Rf ~/Sites/pantheon/$1/sites/all/themes/berkeley &&
+    rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon/$1/sites/all/themes/berkeley
   fi
 }
 
@@ -317,12 +316,12 @@ updatetheme_force() {
     echo "Needs one parameter: site"
   else
     #make backup of existing theme including hidden files
-    rsync -av ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley/ ~/backups/theme_backups/berkeley_$1_`date +%F_%H-%M-%S` &&
+    rsync -av ~/Sites/pantheon/$1/sites/all/themes/berkeley/ ~/backups/theme_backups/berkeley_$1_`date +%F_%H-%M-%S` &&
 
     #remove and rsync
-    git rm -rf ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley &&
-    rm -Rf ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley &&
-    rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
+    git rm -rf ~/Sites/pantheon/$1/sites/all/themes/berkeley &&
+    rm -Rf ~/Sites/pantheon/$1/sites/all/themes/berkeley &&
+    rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon/$1/sites/all/themes/berkeley
   fi
 }
 
@@ -333,7 +332,7 @@ addtheme() {
     echo "Needs one parameter: site"
   else
     #rsync
-    rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
+    rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon/$1/sites/all/themes/berkeley
   fi
 }
 
@@ -344,12 +343,12 @@ reptheme() {
     echo "Needs one parameter: site"
   else
     #make backup of existing theme including hidden files
-    rsync -av ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley/ ~/backups/theme_backups/berkeley_$1_`date +%F_%H-%M-%S` &&
+    rsync -av ~/Sites/pantheon/$1/sites/all/themes/berkeley/ ~/backups/theme_backups/berkeley_$1_`date +%F_%H-%M-%S` &&
 
     #remove and symlink
-    git rm -r ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley &&
-    rm -Rf ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley &&
-    ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
+    git rm -r ~/Sites/pantheon/$1/sites/all/themes/berkeley &&
+    rm -Rf ~/Sites/pantheon/$1/sites/all/themes/berkeley &&
+    ln -s ~/github/berkeley-7.x ~/Sites/pantheon/$1/sites/all/themes/berkeley
   fi
 }
 
@@ -360,12 +359,12 @@ reptheme_force() {
     echo "Needs one parameter: site"
   else
     #make backup of existing theme including hidden files
-    rsync -av ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley/ ~/backups/theme_backups/berkeley_$1_`date +%F_%H-%M-%S` &&
+    rsync -av ~/Sites/pantheon/$1/sites/all/themes/berkeley/ ~/backups/theme_backups/berkeley_$1_`date +%F_%H-%M-%S` &&
 
     #remove and symlink
-    git rm -rf ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley &&
-    rm -Rf ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley &&
-    ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
+    git rm -rf ~/Sites/pantheon/$1/sites/all/themes/berkeley &&
+    rm -Rf ~/Sites/pantheon/$1/sites/all/themes/berkeley &&
+    ln -s ~/github/berkeley-7.x ~/Sites/pantheon/$1/sites/all/themes/berkeley
   fi
 }
 
@@ -375,8 +374,8 @@ applytheme() {
   then
     echo "Needs one parameter: site"
   else
-    rm ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley &&
-    rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
+    rm ~/Sites/pantheon/$1/sites/all/themes/berkeley &&
+    rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon/$1/sites/all/themes/berkeley
   fi
 }
 
@@ -386,7 +385,7 @@ rmtheme() {
   then
     echo "Needs one parameter: site"
   else
-    git rm -r ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
+    git rm -r ~/Sites/pantheon/$1/sites/all/themes/berkeley
   fi
 }
 
@@ -397,7 +396,7 @@ cleanup() {
   then
     echo "Needs one parameter: site"
   else
-    rm -Rf ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
+    rm -Rf ~/Sites/pantheon/$1/sites/all/themes/berkeley
   fi
 }
 
@@ -408,7 +407,7 @@ symtheme() {
   then
     echo "Needs one parameter: site"
   else
-    ln -s ~/github/berkeley-7.x ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
+    ln -s ~/github/berkeley-7.x ~/Sites/pantheon/$1/sites/all/themes/berkeley
   fi
 }
 
@@ -419,7 +418,7 @@ nosymtheme() {
   then
     echo "Needs one parameter: site"
   else
-    rm ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
+    rm ~/Sites/pantheon/$1/sites/all/themes/berkeley
   fi
 }
 
@@ -429,13 +428,13 @@ checkcustom() {
   then
     echo "Needs one parameter: site"
   elif
-    grep -x "environment = :production" ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley/config.rb ||
-    [ -f ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley/sass/styles.scss ] ||
-    [ -f ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley/css/styles.css ] ||
-    [ -f ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley/css/local.css ]
+    grep -x "environment = :production" ~/Sites/pantheon/$1/sites/all/themes/berkeley/config.rb ||
+    [ -f ~/Sites/pantheon/$1/sites/all/themes/berkeley/sass/styles.scss ] ||
+    [ -f ~/Sites/pantheon/$1/sites/all/themes/berkeley/css/styles.css ] ||
+    [ -f ~/Sites/pantheon/$1/sites/all/themes/berkeley/css/local.css ]
   then
     echo "custom files may exist"
-    find ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley \
+    find ~/Sites/pantheon/$1/sites/all/themes/berkeley \
     \( -name config.rb -o -name berkeley.info -o -name styles.scss -o -name styles.css -o -name local.css \) \
     -print0 | xargs -0 ls
   else
@@ -449,12 +448,12 @@ findcustom() {
   then
     echo "Needs one parameter: site"
   else
-    find ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley \
+    find ~/Sites/pantheon/$1/sites/all/themes/berkeley \
     \( -name config.rb -o -name berkeley.info -o -name styles.scss -o -name styles.css -o -name local.css \) \
     -print0 | xargs -0 ls
 
   #find .txt files; prune those in css directory
-  #find ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley -maxdepth 1 -name css -prune -o -name '*.txt' -print0 | xargs -0 ls
+  #find ~/Sites/pantheon/$1/sites/all/themes/berkeley -maxdepth 1 -name css -prune -o -name '*.txt' -print0 | xargs -0 ls
 
   fi
 }
@@ -467,7 +466,7 @@ symlinkrepo() {
   then
     echo "Needs two parameters: site and module"
   else
-    ln -s ~/github/$2 ~/Sites/pantheon_v2/$1/sites/all/modules/$2
+    ln -s ~/github/$2 ~/Sites/pantheon/$1/sites/all/modules/$2
   fi
 }
 
@@ -477,8 +476,8 @@ applyrepo() {
   then
     echo "Needs two parameters: site and module"
   else
-    rm ~/Sites/pantheon_v2/$1/sites/all/modules/$2 &&
-    rsync -avh --exclude=".*/" ~/github/$2/ ~/Sites/pantheon_v2/$1/sites/all/modules/$2
+    rm ~/Sites/pantheon/$1/sites/all/modules/$2 &&
+    rsync -avh --exclude=".*/" ~/github/$2/ ~/Sites/pantheon/$1/sites/all/modules/$2
   fi
 }
 
@@ -489,12 +488,12 @@ reprepo() {
     echo "Needs two parameters: site and module"
   else
     #make backup of existing repo including hidden files
-    rsync -av ~/Sites/pantheon_v2/$1/sites/all/modules/$2/ ~/backups/module_backups/$1_$2_`date +%F_%H-%M-%S` &&
+    rsync -av ~/Sites/pantheon/$1/sites/all/modules/$2/ ~/backups/module_backups/$1_$2_`date +%F_%H-%M-%S` &&
 
     #remove and symlink
-    git rm -r ~/Sites/pantheon_v2/$1/sites/all/modules/$2 &&
-    rm -Rf ~/Sites/pantheon_v2/$1/sites/all/modules/$2 &&
-    ln -s ~/github/$2 ~/Sites/pantheon_v2/$1/sites/all/modules/$2
+    git rm -r ~/Sites/pantheon/$1/sites/all/modules/$2 &&
+    rm -Rf ~/Sites/pantheon/$1/sites/all/modules/$2 &&
+    ln -s ~/github/$2 ~/Sites/pantheon/$1/sites/all/modules/$2
   fi
 }
 
@@ -505,12 +504,12 @@ reprepo_ng() {
     echo "Needs two parameters: site and module"
   else
     #make backup of existing repo including hidden files
-    rsync -av ~/Sites/pantheon_v2/$1/sites/all/modules/$2/ ~/backups/module_backups/$1_$2_`date +%F_%H-%M-%S` &&
+    rsync -av ~/Sites/pantheon/$1/sites/all/modules/$2/ ~/backups/module_backups/$1_$2_`date +%F_%H-%M-%S` &&
 
     #remove and symlink
-    #git rm -r ~/Sites/pantheon_v2/$1/sites/all/modules/$2 &&
-    rm -Rf ~/Sites/pantheon_v2/$1/sites/all/modules/$2 &&
-    ln -s ~/github/$2 ~/Sites/pantheon_v2/$1/sites/all/modules/$2
+    #git rm -r ~/Sites/pantheon/$1/sites/all/modules/$2 &&
+    rm -Rf ~/Sites/pantheon/$1/sites/all/modules/$2 &&
+    ln -s ~/github/$2 ~/Sites/pantheon/$1/sites/all/modules/$2
   fi
 }
 
@@ -530,10 +529,10 @@ rsynctheme() {
     echo "Needs one parameter: site"
   else
     #exclude dotfiles
-    rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
+    rsync -avh --exclude=".*/" ~/github/berkeley-7.x/ ~/Sites/pantheon/$1/sites/all/themes/berkeley
 
     #to use exclude file comment above and uncomment blow
-    #rsync -avh --exclude-from $EXCLUDE_FILE ~/github/berkeley-7.x/ ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley
+    #rsync -avh --exclude-from $EXCLUDE_FILE ~/github/berkeley-7.x/ ~/Sites/pantheon/$1/sites/all/themes/berkeley
   fi
 }
 
@@ -544,9 +543,9 @@ tester() {
   else
     echo "This is a test"
     #shopt -s extglob && #Note: Required, but already declared at top of this file
-    #find ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley/+(config.rb) &&
-    #rm -Rfv ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley/!(config.rb) &&
-    #rm -Rfv ~/Sites/pantheon_v2/$1/sites/all/themes/berkeley/.??* #remove hidden files #or use shopt -s extglob dotglob
+    #find ~/Sites/pantheon/$1/sites/all/themes/berkeley/+(config.rb) &&
+    #rm -Rfv ~/Sites/pantheon/$1/sites/all/themes/berkeley/!(config.rb) &&
+    #rm -Rfv ~/Sites/pantheon/$1/sites/all/themes/berkeley/.??* #remove hidden files #or use shopt -s extglob dotglob
     #git ls-files --deleted -z | xargs -0 git rm &&  #git rm deleted files
     #shopt -u extglob
   fi

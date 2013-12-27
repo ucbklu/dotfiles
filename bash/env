@@ -23,4 +23,5 @@ PATH=~/bin:/Applications/acquia-drupal/mysql/bin:/Applications/acquia-drupal/php
 source ~/.git-completion.sh
 
 #Drush
-source ~/drush/drush.complete.sh
+export PATH="$PATH:/~/github/drush/drush:/usr/local/bin"
+source ~/github/drush/drush.complete.sh
