@@ -8,11 +8,11 @@ Other People's Dotfiles (OPD): http://dotfiles.github.io/
 
 Tree
 ------------------
-.
-├── README
-├── bash
-│   ├── aliases
-│   ├── config
-│   ├── env
-│   └── exclude-list.txt
-└── bashrc
+
+* README.md
+* bash
+  + aliases
+  + config
+  + env
+  + exclude-list.txt
+* bashrc
