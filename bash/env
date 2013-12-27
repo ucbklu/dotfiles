@@ -1,27 +1,29 @@
 #Environment variables
 
+#Bin Files
+PATH=~/bin:$PATH
+
 #Sublime Text 2
-export EDITOR='subl -w'
+EDITOR='subl -w'
 
 #Bundler -- using "bundle install --binstubs .bundle/bin"
-export PATH="./.bundle/bin:$PATH"
+PATH="./.bundle/bin:$PATH"
 
 #Brew packages
-export PATH="/usr/local/bin:/usr/local/sbin:~/bin:$PATH"
+PATH="/usr/local/bin:/usr/local/sbin:~/bin:$PATH"
 
 #RBENV
-export PATH="$HOME/.rbenv/bin:$PATH"
+PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 
 #acquia drupal
 PATH=~/bin:/Applications/acquia-drupal/mysql/bin:/Applications/acquia-drupal/php/bin:/Applications/acquia-drupal/apache/bin:$PATH
 
-#PATH
-#export PATH=$PATH:~/bin
+#Drush
+PATH=~/github/drush:$PATH
+source ~/github/drush/drush.complete.sh
 
 #Git
 source ~/.git-completion.sh
 
-#Drush
-export PATH="$PATH:/~/github/drush/drush:/usr/local/bin"
-source ~/github/drush/drush.complete.sh
+export EDITOR PATH

@@ -87,7 +87,7 @@ alias ee='subl ~/bin/dotfiles/bash/env'  #edit env
 alias o='open . &'
 alias ff='open -a Firefox'
 
-#drush
+#drush (PATH added to env)
 alias drush6='~/github/drush/drush'
 
 #drush basic
