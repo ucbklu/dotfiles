@@ -6,15 +6,15 @@ PATH=~/bin:$PATH
 #Sublime Text 2
 EDITOR='subl -w'
 
-#Bundler -- using "bundle install --binstubs .bundle/bin"
-PATH="./.bundle/bin:$PATH"
-
 #Brew packages
 PATH="/usr/local/bin:/usr/local/sbin:~/bin:$PATH"
 
 #RBENV
 PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
+
+#Bundler -- using "bundle install --binstubs .bundle/bin"
+PATH="./.bundle/bin:$PATH"
 
 #acquia drupal
 PATH=~/bin:/Applications/acquia-drupal/mysql/bin:/Applications/acquia-drupal/php/bin:/Applications/acquia-drupal/apache/bin:$PATH
@@ -26,4 +26,11 @@ source ~/github/drush/drush.complete.sh
 #Git
 source ~/.git-completion.sh
 
-export EDITOR PATH
+#Developer portal
+THREE_SCALE_KEY='keyhere'
+THREE_SCALE_SITE='URLhere'
+RDS_USERNAME='usernamehere'
+RDS_PASSWORD='pwdhere'
+
+ 
+export EDITOR PATH THREE_SCALE_KEY THREE_SCALE_SITE RDS_USERNAME RDS_PASSWORD

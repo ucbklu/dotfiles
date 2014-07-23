@@ -19,6 +19,7 @@ alias cdr='cd ~/RubymineProjects'
 alias cdg='cd ~/github'
 alias cdb='cd ~/github/berkeley-7.x'
 alias cdp='cd ~/Sites/pantheon'
+alias cdt='cd ~/Sites/tests'
 alias cda='cd ~/Angular'
 alias cdbkp='cd ~/Sites/backups'
 alias cdd='cd ~/bin/dotfiles'
@@ -42,7 +43,7 @@ pgd() {
   then
     echo "Needs two parameters: db and filename.sql"
   else
-    g
+    pg_dump $1 > ~/Ruby/backups/psql_bkps/$2
   fi
 }
 
@@ -88,7 +89,7 @@ alias o='open . &'
 alias ff='open -a Firefox'
 
 #drush (PATH added to env)
-alias drush6='~/github/drush/drush'
+alias drush='~/github/drush/drush'
 
 #drush basic
 d() {
@@ -176,6 +177,8 @@ alias gav='git apply -v' #git apply -v: apply patch in git repo; use --stat and 
 alias gco='git checkout' #switch to different branch
 alias gcob='git checkout -b' #create a new branch; use gcob branchname origin/branchname to create local from origin branch
 alias gl='git pull'
+alias glum='git pull upstream master'
+alias glud='git pull upstream develop'
 alias gp='git push'
 alias gb='git branch' #show branches
 alias gbva='git branch -va' #show branches - verbose/all (incl remote)
@@ -232,6 +235,17 @@ grs() {
   fi
 }
 
+# git remote rm
+grm() {
+  if [ -z "$1" ]
+  then
+    echo "Needs one parameters: remote-name"
+  else
+    git remote rm $1
+  fi
+}
+
+
 #### Drupal Patches ####
 
 copypatch() {
@@ -269,6 +283,26 @@ ptest() {
     patch -p1 --dry-run < ~/Sites/pantheon/$1/sites/all/modules/PATCHES/$2
   fi
 }
+
+# For test sites at ~/Sites/tests
+pt() {
+  if [ -z "$1" ]
+  then
+    echo "Needs two parameters: site and patchfile"
+  else
+    patch -p1 < ~/Sites/tests/$1/sites/all/modules/PATCHES/$2
+  fi
+}
+
+ptestt() {
+  if [ -z "$1" ]
+  then
+    echo "Needs two parameters: site and patchfile"
+  else
+    patch -p1 --dry-run < ~/Sites/tests/$1/sites/all/modules/PATCHES/$2
+  fi
+}
+
 
 ptest_strip() {
   if [ -z "$1" ]
